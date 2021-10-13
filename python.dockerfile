@@ -1,6 +1,6 @@
-FROM debian:11-slim
+FROM python:3.10
 COPY customize.sh .
 RUN scriptPath=./customize.sh && chmod +x $scriptPath && $scriptPath
 RUN rm customize.sh
 
-RUN apt -y install python3-pip && pip install pandas matplotlib
+RUN pip install -U pip && pip install pandas matplotlib
