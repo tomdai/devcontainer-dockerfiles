@@ -227,16 +227,8 @@ END
 mkdir /root/.antigen
 curl -L git.io/antigen > /root/.antigen/antigen.zsh
 tee -a ~/.zshrc << END
+export GPG_TTY=\$(tty)
 setopt correctall
-eval "\$(starship init zsh)"
-source "/root/.antigen/antigen.zsh"
-antigen bundle zsh-users/zsh-completions
-antigen bundle zsh-users/zsh-autosuggestions
-antigen bundle zsh-users/zsh-history-substring-search
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-antigen bundle zsh-users/zsh-syntax-highlighting
-antigen apply
 zstyle ':completion:*' completer _extensions _complete _approximate
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path "\$HOME/.cache/zsh/.zcompcache"
@@ -258,5 +250,14 @@ zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions co
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 zstyle ':completion:*' keep-prefix true
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(\${=\${\${(f)"\$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
-export GPG_TTY=\$(tty)
+
+eval "\$(starship init zsh)"
+source "/root/.antigen/antigen.zsh"
+antigen bundle zsh-users/zsh-completions
+antigen bundle zsh-users/zsh-autosuggestions
+antigen bundle zsh-users/zsh-history-substring-search
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen apply
 END
