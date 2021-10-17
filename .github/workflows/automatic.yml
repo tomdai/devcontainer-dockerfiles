@@ -1,4 +1,4 @@
-name: Build and push Docker images
+name: Update Images (Automatic)
 
 on:
     push:
