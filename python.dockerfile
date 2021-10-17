@@ -1,7 +1,8 @@
 FROM python:3.10-slim
-COPY customize.sh .
-RUN scriptPath=./customize.sh && chmod +x $scriptPath && $scriptPath
-RUN rm customize.sh
+ARG SCRIPT_FILE=customize.sh
+COPY $SCRIPT_FILE .
+RUN chmod +x ./$SCRIPT_FILE && ./$SCRIPT_FILE && rm ./$SCRIPT_FILE
 
-RUN apt -y install make g++
-RUN pip install -U pip && pip install -U --force-reinstall ipykernel pandas matplotlib
+RUN apt update && apt -y install --no-install-recommends make g++
+RUN pip install -U --no-cache-dir pip && pip install --no-cache-dir ipykernel pandas matplotlib
+RUN apt update && apt -y remove make g++ && apt -y autoremove --purge && apt -y clean
