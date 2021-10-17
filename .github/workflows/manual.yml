@@ -1,11 +1,18 @@
-name: Update image
+name: Update Images (Manual)
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      files:
+        description: 'Images to update'
+        required: true
+        default: 'all'
 
 jobs:
     clang:
       name: Build and push image - clang
       runs-on: ubuntu-latest
+      if: contains(github.event.inputs.files, 'clang') || contains(github.event.inputs.files, 'all')
       steps:
         -
           name: Set up QEMU
@@ -32,6 +39,7 @@ jobs:
     java:
       name: Build and push image - java
       runs-on: ubuntu-latest
+      if: contains(github.event.inputs.files, 'java') || contains(github.event.inputs.files, 'all')
       steps:
         -
           name: Set up QEMU
@@ -58,6 +66,7 @@ jobs:
     node:
       name: Build and push image - node
       runs-on: ubuntu-latest
+      if: contains(github.event.inputs.files, 'node') || contains(github.event.inputs.files, 'all')
       steps:
         -
           name: Set up QEMU
@@ -84,6 +93,7 @@ jobs:
     python:
       name: Build and push image - python
       runs-on: ubuntu-latest
+      if: contains(github.event.inputs.files, 'python') || contains(github.event.inputs.files, 'all')
       steps:
         -
           name: Set up QEMU
@@ -110,6 +120,7 @@ jobs:
     rust:
       name: Build and push image - rust
       runs-on: ubuntu-latest
+      if: contains(github.event.inputs.files, 'rust') || contains(github.event.inputs.files, 'all')
       steps:
         -
           name: Set up QEMU
