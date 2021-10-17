@@ -1,6 +1,6 @@
-FROM gcc:11.2
-COPY customize.sh .
-RUN scriptPath=./customize.sh && chmod +x $scriptPath && $scriptPath
-RUN rm customize.sh
+FROM debian:stable-20211011-slim
+ARG SCRIPT_FILE=customize.sh
+COPY $SCRIPT_FILE .
+RUN chmod +x ./$SCRIPT_FILE && ./$SCRIPT_FILE && rm ./$SCRIPT_FILE
 
-RUN apt -y install gdb
+RUN apt -y install --no-install-recommends g++ gdb
