@@ -1,9 +1,9 @@
 apt update
-apt -y install git zsh curl gnupg
+apt -y install --no-install-recommends ca-certificates openssh-client curl git gnupg zsh
+apt -y autoremove --purge && apt -y clean
 
 sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- -y
-mkdir ~/.config
-tee -a ~/.config/starship.toml << END
+mkdir ~/.config && tee -a ~/.config/starship.toml << END
 [aws]
 symbol = "AWS "
 
@@ -224,8 +224,7 @@ symbol = "VLang "
 symbol = "Zig"
 END
 
-mkdir /root/.antigen
-curl -L git.io/antigen > /root/.antigen/antigen.zsh
+mkdir ~/.antigen && curl -L git.io/antigen > ~/.antigen/antigen.zsh
 tee -a ~/.zshrc << END
 export GPG_TTY=\$(tty)
 setopt correctall
