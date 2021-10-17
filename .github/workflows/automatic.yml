@@ -1,169 +1,147 @@
 name: Update Images (Automatic)
 
 on:
-    push:
-        branches:
-            - 'main'
-    pull_request:
-        branches:
-            - 'main'
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
 
 jobs:
-    check:
-      name: Check files
-      outputs:
-        modified_files: ${{ steps.check_files.outputs.modified_files }}
-      runs-on: ubuntu-latest
-      steps:
-        -
-          name: Checkout code
-          uses: actions/checkout@v2
-          with:
-            fetch-depth: 0
-        -
-          name: Check modified files
-          id: check_files
-          run: |
-            modified_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | xargs)
-            echo "::set-output name=modified_files::$modified_files"
-            echo "$modified_files"
+  check:
+    name: Check files
+    outputs:
+      modified_files: ${{ steps.check_files.outputs.modified_files }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Check modified files
+        id: check_files
+        run: |
+          modified_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | xargs)
+          echo "::set-output name=modified_files::$modified_files"
+          echo "$modified_files"
 
-    clang:
-      name: Build and push image - clang
-      needs: check
-      if: contains(needs.check.outputs.modified_files, format('{0}.dockerfile', 'clang')) || contains(needs.check.outputs.modified_files, 'customize.sh')
-      runs-on: ubuntu-latest
-      steps:
-        -
-          name: Set up QEMU
-          uses: docker/setup-qemu-action@v1
-        -
-          name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v1
-        -
-          name: Login to GitHub Container Registry
-          uses: docker/login-action@v1 
-          with:
-            registry: ghcr.io
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
-        -
-          name: Build and push image
-          uses: docker/build-push-action@v2
-          with:
-            push: true
-            tags: ghcr.io/${{ github.actor }}/devcontainer-${{ github.job }}:latest
-            file: ${{ github.job }}.dockerfile
-            platforms: linux/amd64,linux/arm64
+  clang:
+    name: Build and push image - clang
+    needs: check
+    if: contains(needs.check.outputs.modified_files, format('{0}.dockerfile', 'clang')) || contains(needs.check.outputs.modified_files, 'customize.sh')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push image
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ghcr.io/${{ github.actor }}/devcontainer-${{ github.job }}:latest
+          file: ${{ github.job }}.dockerfile
+          platforms: linux/amd64,linux/arm64
 
-    java:
-      name: Build and push image - java
-      needs: check
-      if: contains(needs.check.outputs.modified_files, format('{0}.dockerfile', 'java')) || contains(needs.check.outputs.modified_files, 'customize.sh')
-      runs-on: ubuntu-latest
-      steps:
-        -
-          name: Set up QEMU
-          uses: docker/setup-qemu-action@v1
-        -
-          name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v1
-        -
-          name: Login to GitHub Container Registry
-          uses: docker/login-action@v1 
-          with:
-            registry: ghcr.io
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
-        -
-          name: Build and push image
-          uses: docker/build-push-action@v2
-          with:
-            push: true
-            tags: ghcr.io/${{ github.actor }}/devcontainer-${{ github.job }}:latest
-            file: ${{ github.job }}.dockerfile
-            platforms: linux/amd64,linux/arm64
+  java:
+    name: Build and push image - java
+    needs: check
+    if: contains(needs.check.outputs.modified_files, format('{0}.dockerfile', 'java')) || contains(needs.check.outputs.modified_files, 'customize.sh')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push image
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ghcr.io/${{ github.actor }}/devcontainer-${{ github.job }}:latest
+          file: ${{ github.job }}.dockerfile
+          platforms: linux/amd64,linux/arm64
 
-    node:
-      name: Build and push image - node
-      needs: check
-      if: contains(needs.check.outputs.modified_files, format('{0}.dockerfile', 'node')) || contains(needs.check.outputs.modified_files, 'customize.sh')
-      runs-on: ubuntu-latest
-      steps:
-        -
-          name: Set up QEMU
-          uses: docker/setup-qemu-action@v1
-        -
-          name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v1
-        -
-          name: Login to GitHub Container Registry
-          uses: docker/login-action@v1 
-          with:
-            registry: ghcr.io
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
-        -
-          name: Build and push image
-          uses: docker/build-push-action@v2
-          with:
-            push: true
-            tags: ghcr.io/${{ github.actor }}/devcontainer-${{ github.job }}:latest
-            file: ${{ github.job }}.dockerfile
-            platforms: linux/amd64,linux/arm64
+  node:
+    name: Build and push image - node
+    needs: check
+    if: contains(needs.check.outputs.modified_files, format('{0}.dockerfile', 'node')) || contains(needs.check.outputs.modified_files, 'customize.sh')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push image
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ghcr.io/${{ github.actor }}/devcontainer-${{ github.job }}:latest
+          file: ${{ github.job }}.dockerfile
+          platforms: linux/amd64,linux/arm64
 
-    python:
-      name: Build and push image - python
-      needs: check
-      if: contains(needs.check.outputs.modified_files, format('{0}.dockerfile', 'python')) || contains(needs.check.outputs.modified_files, 'customize.sh')
-      runs-on: ubuntu-latest
-      steps:
-        -
-          name: Set up QEMU
-          uses: docker/setup-qemu-action@v1
-        -
-          name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v1
-        -
-          name: Login to GitHub Container Registry
-          uses: docker/login-action@v1 
-          with:
-            registry: ghcr.io
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
-        -
-          name: Build and push image
-          uses: docker/build-push-action@v2
-          with:
-            push: true
-            tags: ghcr.io/${{ github.actor }}/devcontainer-${{ github.job }}:latest
-            file: ${{ github.job }}.dockerfile
-            platforms: linux/amd64,linux/arm64
+  python:
+    name: Build and push image - python
+    needs: check
+    if: contains(needs.check.outputs.modified_files, format('{0}.dockerfile', 'python')) || contains(needs.check.outputs.modified_files, 'customize.sh')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push image
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ghcr.io/${{ github.actor }}/devcontainer-${{ github.job }}:latest
+          file: ${{ github.job }}.dockerfile
+          platforms: linux/amd64,linux/arm64
 
-    rust:
-      name: Build and push image - rust
-      needs: check
-      if: contains(needs.check.outputs.modified_files, format('{0}.dockerfile', 'rust')) || contains(needs.check.outputs.modified_files, 'customize.sh')
-      runs-on: ubuntu-latest
-      steps:
-        -
-          name: Set up QEMU
-          uses: docker/setup-qemu-action@v1
-        -
-          name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v1
-        -
-          name: Login to GitHub Container Registry
-          uses: docker/login-action@v1 
-          with:
-            registry: ghcr.io
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
-        -
-          name: Build and push image
-          uses: docker/build-push-action@v2
-          with:
-            push: true
-            tags: ghcr.io/${{ github.actor }}/devcontainer-${{ github.job }}:latest
-            file: ${{ github.job }}.dockerfile
-            platforms: linux/amd64,linux/arm64
+  rust:
+    name: Build and push image - rust
+    needs: check
+    if: contains(needs.check.outputs.modified_files, format('{0}.dockerfile', 'rust')) || contains(needs.check.outputs.modified_files, 'customize.sh')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push image
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ghcr.io/${{ github.actor }}/devcontainer-${{ github.job }}:latest
+          file: ${{ github.job }}.dockerfile
+          platforms: linux/amd64,linux/arm64
