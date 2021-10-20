@@ -4,6 +4,11 @@ apt -y autoremove --purge && apt -y clean
 
 sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- -y
 mkdir ~/.config && tee -a ~/.config/starship.toml << END
+format = """$directory$fill$all$character"""
+
+[fill]
+symbol = " "
+
 [aws]
 symbol = "AWS "
 
