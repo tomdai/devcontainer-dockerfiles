@@ -1,4 +1,4 @@
-FROM node:17.2.0-slim
+FROM node:17.3.0-slim
 
 ARG SCRIPT_FILE=customize.sh
 COPY $SCRIPT_FILE .
