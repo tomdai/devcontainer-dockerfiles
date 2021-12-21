@@ -1,4 +1,4 @@
-FROM debian:11.1-slim
+FROM debian:11.2-slim
 
 ARG SCRIPT_FILE=customize.sh
 COPY $SCRIPT_FILE .
