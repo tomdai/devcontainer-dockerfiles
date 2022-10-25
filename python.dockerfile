@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.11.0-slim
 
 ARG SCRIPT_FILE=customize.sh
 COPY $SCRIPT_FILE .
