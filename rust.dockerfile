@@ -1,4 +1,4 @@
-FROM rust:1.67.1-slim
+FROM rust:1.68.0-slim
 
 ARG SCRIPT_FILE=customize.sh
 COPY $SCRIPT_FILE .
